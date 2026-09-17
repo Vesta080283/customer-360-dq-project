@@ -1,0 +1,45 @@
+# Data Contract for Customer 360
+
+data_sources:
+  postgres: # Пример подключения к базе. Замените на CSV-коннектор при необходимости.
+    type: postgres
+    host: localhost
+    username: user
+    password: pass
+    database: dbname
+    schema: public
+
+checks for customers:
+  - row_count > 100
+  - missing_count(customer_id) = 0
+  - duplicate_count(email) = 0
+  - invalid_count(phone): valid regex: ^\\+?\\d{8,}$
+  - freshness(last_updated_at) <= 24h
+
+checks for orders:
+  - row_count > 100
+  - missing_count(order_id) = 0
+  - missing_count(customer_id) = 0
+  - status in [pending, processing, shipped, delivered, cancelled]
+  - amount > 0
+  - freshness(ordered_date) <= 1d
+
+checks for payments:
+  - row_count > 100
+  - missing_count(payment_id) = 0
+  - missing_count(order_id) = 0
+  - payment_amount > 0
+  - freshness(paid_date) <= 1h
+
+checks for products:
+  - row_count > 100
+  - missing_count(product_id) = 0
+  - price > 0
+  - stock_quantity >= 0
+
+checks for order_items:
+  - row_count > 100
+  - missing_count(item_id) = 0
+  - missing_count(order_id) = 0
+  - missing_count(product_id) = 0
+  - quantity > 0

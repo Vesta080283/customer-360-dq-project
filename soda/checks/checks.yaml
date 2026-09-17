@@ -1,0 +1,22 @@
+checks for crm_50000_customers_dirty_v3:
+  - row_count > 49000 # Проверяем, чтобы "грязных" записей было меньше половины
+  - missing_count(email) < 1%
+  - duplicate_count(email) = 0
+  - invalid_count(phone_number): valid regex: ^\\+?\\d{8,}$
+
+checks for orders_300k_dirty:
+  - row_count > 270000 # Ждём минимум 90% валидных строк
+  - status in [pending, processing, shipped, delivered, cancelled]
+  - amount > 0
+  - freshness(order_date) <= 1w
+
+checks for product_catalog_dirty_30pct:
+  - price > 0
+  - stock_quantity >= 0
+  - missing_percent(product_name) < 10%
+
+checks for support_tickets_30000_dirty:
+  - row_count > 27000 # Минимум 90% валидности
+  - missing_count(ticket_id) = 0
+  - missing_count(customer_id) = 0
+  - freshness(created_at) <= 1h # Тикет должен быть создан оперативно

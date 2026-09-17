@@ -1,0 +1,15 @@
+{
+  "channel": "#data-quality-alerts",
+  "rules": [
+    {
+      "metric": "duplicate_phones",
+      "threshold": 5,
+      "severity": "warning"
+    },
+    {
+      "metric": "pct_null_email",
+      "threshold": 0.01,
+      "severity": "critical"
+    }
+  ]
+}
